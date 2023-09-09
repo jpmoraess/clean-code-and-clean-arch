@@ -1,0 +1,3 @@
+rootProject.name = 'clean-code-and-clean-arch'
+include 'aula01'
+
