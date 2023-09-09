@@ -11,6 +11,6 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupResponse {
+public class SignupOutput {
 	private UUID accountId;
 }

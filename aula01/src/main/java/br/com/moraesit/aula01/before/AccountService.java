@@ -75,25 +75,25 @@ public class AccountService {
 	}
 
 	@Transactional
-	public SignupResponse signup(SignupRequest request) {
+	public SignupOutput signup(SignupInput input) {
 		UUID accountId = UUID.randomUUID();
 		UUID verificationCode = UUID.randomUUID();
 		LocalDateTime date = LocalDateTime.now();
 
-		Optional<AccountEntity> existingAccount = accountRepository.findByEmail(request.getEmail());
+		Optional<AccountEntity> existingAccount = accountRepository.findByEmail(input.getEmail());
 
 		if (existingAccount.isEmpty()) {
-			if (request.getName().matches("[a-zA-Z]+ [a-zA-Z]+")) {
-				if (request.getEmail().matches("^(.+)@(.+)$")) {
-					if (validateCpf(request.getCpf())) {
+			if (input.getName().matches("[a-zA-Z]+ [a-zA-Z]+")) {
+				if (input.getEmail().matches("^(.+)@(.+)$")) {
+					if (validateCpf(input.getCpf())) {
 						AccountEntity accountEntity = AccountEntity.builder()
 								.accountId(accountId)
-								.name(request.getName())
-								.email(request.getEmail())
-								.cpf(request.getCpf())
-								.carPlate(request.getCarPlate())
-								.isPassenger(request.isPassenger())
-								.isDriver(request.isDriver())
+								.name(input.getName())
+								.email(input.getEmail())
+								.cpf(input.getCpf())
+								.carPlate(input.getCarPlate())
+								.isPassenger(input.isPassenger())
+								.isDriver(input.isDriver())
 								.date(date)
 								.isVerified(Boolean.FALSE)
 								.verificationCode(verificationCode)
@@ -101,9 +101,9 @@ public class AccountService {
 
 						accountRepository.save(accountEntity);
 
-						sendEmail(request.getEmail(), "Verification", "Please verify your code at first login " + verificationCode);
+						sendEmail(input.getEmail(), "Verification", "Please verify your code at first login " + verificationCode);
 
-						return new SignupResponse(accountId);
+						return new SignupOutput(accountId);
 					} else {
 						throw new IllegalArgumentException("Invalid cpf");
 					}
